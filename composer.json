@@ -1,0 +1,5 @@
+{
+    "require": {
+        "threadmeup/slack-sdk": "dev-master"
+    }
+}
