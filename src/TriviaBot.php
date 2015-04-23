@@ -8,7 +8,6 @@
 
 namespace BTK;
 
-use ThreadMeUp\Slack;
 
 class TriviaBot {
 
@@ -21,6 +20,7 @@ class TriviaBot {
     {
         $this->currentSet = (!empty($params['currentSet'])) ? $params['currentSet'] : -1;
         $this->currentQuestion = (!empty($params['currentQuestion'])) ? $params['currentQuestion'] : "";
+        $this->currentAnswer = (!empty($params['currentAnswer'])) ? $params['currentAnswer'] : "";
         $this->client = (!empty($params['client'])) ? $params['client'] : -1;
     }
 
