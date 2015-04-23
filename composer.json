@@ -1,4 +1,16 @@
 {
+  "name": "BTK/triviabot",
+  "description": "Implementation of a trivia bot for Slack",
+  "keywords": ["slack","trivia"],
+  "homepage": "https://github.com/AberdeenPHP/triviabot",
+  "license" : "UNLICENSE",
+  "authors" : [
+    {
+      "name": "Billy Fagan",
+      "email": "billy@the-kid.org",
+      "homepage": "http://twitter.com/billythekid"
+    }
+  ],
     "require": {
         "threadmeup/slack-sdk": "dev-master",
         "vlucas/phpdotenv": "~1.1"
