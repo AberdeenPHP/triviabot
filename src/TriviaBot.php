@@ -21,7 +21,7 @@ class TriviaBot {
     {
         $this->currentSet = (!empty($params['currentSet'])) ? $params['currentSet'] : -1;
         $this->currentQuestion = (!empty($params['currentQuestion'])) ? $params['currentQuestion'] : "";
-        $this->currentAnswer = "";
+        $this->client = (!empty($params['client'])) ? $params['client'] : -1;
     }
 
     /**
@@ -32,8 +32,6 @@ class TriviaBot {
      */
     public function sendMessageToChannel($channel, $message)
     {
-        include "config.php";
-        $this->setClient(new Slack\Client($config));
         $chat = $this->client->chat($channel);
         $chat->send($message);
     }
@@ -94,9 +92,6 @@ class TriviaBot {
     {
         $this->currentAnswer = $currentAnswer;
     }
-
-
-
 
 
 }
