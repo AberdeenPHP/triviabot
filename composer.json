@@ -1,5 +1,5 @@
 {
-  "name": "BTK/triviabot",
+  "name": "btk/triviabot",
   "description": "Implementation of a trivia bot for Slack",
   "keywords": ["slack","trivia"],
   "homepage": "https://github.com/AberdeenPHP/triviabot",
