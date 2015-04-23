@@ -33,7 +33,7 @@ class TriviaBot {
     public function sendMessageToChannel($channel, $message)
     {
         include "config.php";
-        $this->setClient(new Slack\Client($configs));
+        $this->setClient(new Slack\Client($config));
         $chat = $this->client->chat($channel);
         $chat->send($message);
     }

@@ -8,8 +8,6 @@
 include '../vendor/autoload.php';
 include 'ourConfig.php'; // .gitignored - simply creates a $config var using the settings below
 
-use ThreadMeUp\Slack\Client;
-
 $config = (!empty($config)) ? $config : [
     'token' => 'USER-API-TOKEN',
     'team' => 'YOUR-TEAM',
