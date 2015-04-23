@@ -15,5 +15,7 @@
     "require": {
         "threadmeup/slack-sdk": "dev-master",
         "vlucas/phpdotenv": "~1.1"
-    }
+    },
+  "minimum-stability": "dev"
+
 }
