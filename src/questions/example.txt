@@ -1,0 +1,38 @@
+# Example Questions
+# example.txt
+
+# This file shows an example of how to set up question files. The first line in the file should be a comment with
+# only the title of the questions and the second line the name of the file (so we can load these into the bot)
+# Lines starting with a # are comments and will not be shown to the channel.
+
+# Blank lines or lines that consist of only spaces are also ignored.
+# Questions should be formatted as follows
+# Question one? | answer one | answer two | ... | answer n
+
+# Questions are shown to channel in the format...
+
+# Question text?
+# Hint1: Q******* A***** (first letters)
+# [delay]
+# Hint2: Que***** A***** (first 3 letters)
+# [delay]
+# Hint3: Que**io* A***e* (vowels filled in)
+# [delay]
+# Nobody got it! The answer was: Question Answer. Next question coming up...
+# OR
+# Yes! [username] got it right and scores [30 or 20 or 10] points! The answer was: Question Answer!
+
+# The answer hints are based on the first answer given in the question options ("ninety minutes" in our first example below)
+
+# Here are some example questions, if this file is loaded in the bot these questions will be in play.
+
+How many regular minutes are played in a game of football (soccer)? | ninety minutes | ninety | 90 | 90 mins | 90 minutes | ninety mins
+What is the name of the world's favourite search engine? | Google | google.com
+What is Barbie's full name? | Barbara Millicent Roberts
+Who produced the Toy Story movies? | Pixar
+Quick! What's three squared? | nine | 9
+Name that film! Transported to a surreal landscape, a young girl kills the first person she meets and then teams up with three strangers to kill again. | The Wizard of Oz | wizard of oz
+Name that film! It's about a spaceship that's run by an assistant named "Computer". | Star Trek
+Name that film! In one seen we meet a woman who could easily cope with triplets. | Total Recall
+Quick! The alphabet, in order! | abcdefghijklmnopqrstuvwxyz | the alphabet
+Who sings "Shake It Off"? | Taylor Swift
