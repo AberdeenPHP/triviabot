@@ -7,33 +7,29 @@
  */
 
 namespace BTK;
-use ThreadMeUp\Slack;
 
 class TriviaBot {
 
     private $currentSet;
     private $currentQuestion;
     private $currentAnswer;
-    private $client;
 
     public function __construct($params)
     {
         $this->currentSet = (!empty($params['currentSet'])) ? $params['currentSet'] : -1;
         $this->currentQuestion = (!empty($params['currentQuestion'])) ? $params['currentQuestion'] : "";
         $this->currentAnswer = (!empty($params['currentAnswer'])) ? $params['currentAnswer'] : "";
-        $this->client = (!empty($params['client'])) ? $params['client'] : new Slack\Client();
+
     }
 
     /**
-     * @param string $channel
      * @param string $message
      *
-     * @return void
+     * @return string JSON encoded
      */
-    public function sendMessageToChannel($channel, $message)
+    public function sendMessageToChannel($message)
     {
-        $chat = $this->client->chat($channel);
-        $chat->send($message);
+        return json_encode(array("text"=>$message));
     }
 
 
@@ -43,14 +39,6 @@ class TriviaBot {
     public function getCurrentSet()
     {
         return $this->currentSet;
-    }
-
-    /**
-     * @param mixed $client
-     */
-    public function setClient($client)
-    {
-        $this->client = $client;
     }
 
     /**
