@@ -32,6 +32,13 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] === SLACK_TOKE
     //tell the channel
     echo $bot->sendMessageToChannel("");
 */
+    $player_name = $_POST['user_name'];
+    $player_answer = trim($_POST['text']);
+    $player_channel = $_POST['channel_name'];
+    echo $bot->sendMessageToChannel("I just saw {$player_name} say {$player_answer} in {$player_channel}!");
+
+    unset($bot);//just to get rid of the unused var warning in phpstorm!
+
 }
 else
 {
@@ -44,7 +51,6 @@ else
 
 
 
-unset($bot);//just to get rid of the unused var warning in phpstorm!
 
 
 /* Example POSTed data from channel
