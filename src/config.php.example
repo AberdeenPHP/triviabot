@@ -1,0 +1,4 @@
+<?php
+
+define("SLACK_TOKEN","theValueOfYourTokenInYourOutgoingWebhookInSlack");
+define("SLACK_CHANNEL","#trivia"); //for example

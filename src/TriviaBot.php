@@ -14,11 +14,11 @@ class TriviaBot {
     private $currentQuestion;
     private $currentAnswer;
 
-    public function __construct($params)
+    public function __construct()
     {
-        $this->currentSet = (!empty($params['currentSet'])) ? $params['currentSet'] : -1;
-        $this->currentQuestion = (!empty($params['currentQuestion'])) ? $params['currentQuestion'] : "";
-        $this->currentAnswer = (!empty($params['currentAnswer'])) ? $params['currentAnswer'] : "";
+        $this->currentSet = -1;
+        $this->currentQuestion = "";
+        $this->currentAnswer =  "";
 
     }
 
