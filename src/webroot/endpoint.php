@@ -7,14 +7,13 @@
  */
 namespace BTK;
 ini_set('display_errors', 1);
-require_once('../config.php');
+include_once('../config.php');
+include_once('../TriviaBot.php');
 
-if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] === SLACK_TOKEN))
+if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_TOKEN && $_POST['user_name'] !== 'slackbot' && $_POST['user_id'] !== "USLACKBOT"))
 {
-    require_once('../TriviaBot.php');
-    $bot = new TriviaBot();
-    require_once('../db.php');
-/*
+   // include('../db.php');
+
     //check if it's a command for the bot !start !stop !load etc.
 
     //otherwise...
@@ -22,6 +21,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] === SLACK_TOKE
     //check if a question is active
 
     //check if the answer is correct
+    $player_answer = $_POST['text'];
 
     //grab the player
     $player_id = $_POST['user_id'];
@@ -30,20 +30,15 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] === SLACK_TOKE
     //add to their current monthly score
 
     //tell the channel
-    echo $bot->sendMessageToChannel("");
-*/
-    $player_name = $_POST['user_name'];
-    $player_answer = trim($_POST['text']);
     $player_channel = $_POST['channel_name'];
-    echo $bot->sendMessageToChannel("I just saw {$player_name} say {$player_answer} in {$player_channel}!");
 
-    unset($bot);//just to get rid of the unused var warning in phpstorm!
+    die(TriviaBot::sendMessageToChannel("I just saw {$player_name}({$player_id}) say {$player_answer} in {$player_channel}!",SLACK_CHANNEL));
 
 }
 else
 {
-    // just fail, they're being a tool
     http_response_code(404);
+    die();
 }
 
 
