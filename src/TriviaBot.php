@@ -32,7 +32,8 @@ class TriviaBot {
         return json_encode(array(
             "text"=>$message,
             "channel"=>'#'.ltrim($channel,"#"),
-            "username"=>"Trivia Bot")
+            "username"=>"Trivia Bot",
+            "icon_emoji"=> ":clap:")
         );
     }
 
