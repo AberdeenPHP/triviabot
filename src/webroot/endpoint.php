@@ -23,4 +23,4 @@ $slack = new Slack\Client($config);
 $params = array('client'=>$slack);
 
 $bot = new TriviaBot($params);
-unset($bot);
+$bot->sendMessageToChannel('#trivia',"testing!");
