@@ -7,12 +7,45 @@
  */
 namespace BTK;
 ini_set('display_errors', 1);
-require('../TriviaBot.php');
-require('../db.php');
+require_once('../config.php');
 
-$params = [];
-$bot = new TriviaBot($params);
-unset($bot);//just to get rid of teh unused var warning in phpstorm!
+if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] === SLACK_TOKEN))
+{
+    require_once('../TriviaBot.php');
+    $bot = new TriviaBot();
+    require_once('../db.php');
+/*
+    //check if it's a command for the bot !start !stop !load etc.
+
+    //otherwise...
+
+    //check if a question is active
+
+    //check if the answer is correct
+
+    //grab the player
+    $player_id = $_POST['user_id'];
+    $player_name = $_POST['user_name'];
+
+    //add to their current monthly score
+
+    //tell the channel
+    echo $bot->sendMessageToChannel("");
+*/
+}
+else
+{
+    // just fail, they're being a tool
+    http_response_code(404);
+}
+
+
+
+
+
+
+unset($bot);//just to get rid of the unused var warning in phpstorm!
+
 
 /* Example POSTed data from channel
 token=FWfMETEsdOxzYZPjm76PhJiL
