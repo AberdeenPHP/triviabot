@@ -27,9 +27,13 @@ class TriviaBot {
      *
      * @return string JSON encoded
      */
-    public function sendMessageToChannel($message)
+    public static function sendMessageToChannel($message,$channel)
     {
-        return json_encode(array("text"=>$message));
+        return json_encode(array(
+            "text"=>$message,
+            "channel"=>'#'.ltrim($channel,"#"),
+            "username"=>"Trivia Bot")
+        );
     }
 
 

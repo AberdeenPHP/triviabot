@@ -2,3 +2,4 @@
 
 define("SLACK_TOKEN","theValueOfYourTokenInYourOutgoingWebhookInSlack");
 define("SLACK_CHANNEL","#trivia"); //for example
+define("SLACK_BOT_NAME","Trivia Bot"); //for example
