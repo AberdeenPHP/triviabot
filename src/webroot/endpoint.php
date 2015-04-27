@@ -6,8 +6,11 @@
  * Time: 14:54
  */
 namespace BTK;
+include __DIR__.'../../../../../../vendor/autoload.php';
+
 use ThreadMeUp\Slack;
 use Dotenv;
+ini_set('display_errors', 1);
 
 Dotenv::load(__DIR__);
 
@@ -21,6 +24,5 @@ $config = [
 
 $slack = new Slack\Client($config);
 $params = array('client'=>$slack);
-
 $bot = new TriviaBot($params);
 $bot->sendMessageToChannel('#trivia',"testing!");
