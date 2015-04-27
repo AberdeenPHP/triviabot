@@ -29,6 +29,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_TOKEN
 
     //add to their current monthly score
 
+
     //tell the channel
     $player_channel = $_POST['channel_name'];
 
@@ -40,12 +41,6 @@ else
     http_response_code(404);
     die();
 }
-
-
-
-
-
-
 
 
 /* Example POSTed data from channel
