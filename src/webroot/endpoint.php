@@ -8,7 +8,6 @@
 namespace BTK;
 use ThreadMeUp\Slack;
 use Dotenv;
-include './vendor/autoload.php';
 
 Dotenv::load(__DIR__);
 
@@ -22,4 +21,6 @@ $config = [
 
 $slack = new Slack\Client($config);
 $params = array('client'=>$slack);
+
 $bot = new TriviaBot($params);
+unset($bot);
