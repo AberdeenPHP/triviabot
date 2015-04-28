@@ -32,10 +32,13 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
         {
             case "!start":
                 //start the bot
+                $bot->setIconEmoji(":sunglasses:");
                 $bot->start();
                 break;
             case "!stop":
                 //stop the bot after this question
+                $bot->setIconEmoji(":hand:");
+                $bot->stop();
                 die($bot->sendMessageToChannel("*Game stopped by {$player_name} after this question*"));
                 break;
             case "!help":

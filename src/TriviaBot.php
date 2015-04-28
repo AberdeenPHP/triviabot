@@ -7,6 +7,7 @@
  */
 
 namespace BTK;
+use ActiveRecord;
 
 class TriviaBot {
 
@@ -26,6 +27,7 @@ class TriviaBot {
         $this->currentSet = -1;
         $this->currentQuestion = "";
         $this->currentAnswer =  "";
+
 
     }
 

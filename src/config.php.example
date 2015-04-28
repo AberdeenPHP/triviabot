@@ -4,3 +4,18 @@ define("SLACK_OUTGOING_TOKEN","theValueOfYourTokenInYourOutgoingWebhookInSlack")
 define("SLACK_INCOMING_WEBHOOK_URL","https://hooks.slack.com/services/XXXXXXXXXX/XXXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX");
 define("SLACK_CHANNEL","#trivia"); //for example
 define("SLACK_BOT_NAME","Trivia Bot"); //for example
+
+define("DB_USER","triviabot");
+define("DB_PASS","xxxxxxxxx");
+define("DB_HOST","localhost");
+define("DB_NAME","triviabot");
+
+require_once '../vendor/php-activerecord/php-activerecord/ActiveRecord.php';
+
+ActiveRecord\Config::initialize(function($cfg)
+{
+    $cfg->set_model_directory('models');
+    $cfg->set_connections(array(
+        'development' => 'mysql://'.DB_USER.':'.DB_PASS.'@'.DB_HOST.'/'.DB_NAME
+    ));
+});
