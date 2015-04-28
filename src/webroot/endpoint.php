@@ -34,7 +34,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                     $bot->setIconEmoji(":interrobang:");
                     die($bot->sendMessageToChannel("You forgot to tell me what file to load, silly!"));
                 }
-                elseif (empty($command[2] || $command[2] == "false"))
+                elseif (empty($command[2]) || $command[2] == "false")
                 {
                     $loaded = $bot->load($command[1]);
                     die($bot->sendMessageToChannel($loaded));
