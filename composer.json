@@ -12,5 +12,8 @@
       "role": "developer"
     }
   ],
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "require": {
+    "php-activerecord/php-activerecord": "1.1.2"
+  }
 }

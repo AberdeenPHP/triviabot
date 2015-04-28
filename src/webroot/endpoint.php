@@ -9,16 +9,20 @@
 namespace BTK;
 ini_set('display_errors', 1);
 include_once('../config.php');
-include_once('../TriviaBot.php');
 
 if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGOING_TOKEN && $_POST['user_name'] !== 'slackbot' && $_POST['user_id'] !== "USLACKBOT"))
 {
     //include('../db.php');
+    include_once('../TriviaBot.php');
 
+    $bot = new TriviaBot("Trivia Bot");
 
-    $player_id = $_POST['user_id'];
+    //$player_id = $_POST['user_id'];
     $player_name = $_POST['user_name'];
     $player_text = $_POST['text'];
+    $player_channel = $_POST['channel_name'];
+
+    $bot->setChannel($player_channel);
 
     //check if it's a command for the bot !start !stop !load !delay etc.
     if (trim($player_text)[0] == "!") //commands start with a ! character
@@ -28,14 +32,16 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
         {
             case "!start":
                 //start the bot
+                $bot->start();
                 break;
             case "!stop":
                 //stop the bot after this question
+                die($bot->sendMessageToChannel("*Game stopped by {$player_name} after this question*"));
                 break;
             case "!help":
-                //send the help text to the player
+                //send the help text to the channel
                 $helpText = "The options available are...";
-                echo TriviaBot::sendMessageToChannel($helpText,$player_name);
+                die($bot->sendMessageToChannel($helpText));
                 break;
         }
     }
@@ -48,9 +54,6 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
     //add to their current monthly score
 
     //tell the channel
-    $player_channel = $_POST['channel_name'];
-
-    echo TriviaBot::sendMessageToChannel("I just saw {$player_name}({$player_id}) say {$player_text} in {$player_channel}!",SLACK_CHANNEL);
 
 }
 else
