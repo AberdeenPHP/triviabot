@@ -56,11 +56,18 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 $bot->stop();
                 die($bot->sendMessageToChannel("*Game stopped by {$player_name} after this question*"));
                 break;
+            case "!questions":
+                $total = $bot->get_total_questions();
+                die($bot->sendMessageToChannel("*{$player_name}*: there are *{$total}* questions loaded in the database."));
+                break;
             case "!help":
                 //send the help text to the channel
-                $helpText = "The options available are...";
+                $helpText = "The options available are...\n";
+                $helpText .= "*!questions* - shows how many questions are loaded";
                 die($bot->sendMessageToChannel($helpText));
                 break;
+            default:
+                die();
         }
     } else
     {

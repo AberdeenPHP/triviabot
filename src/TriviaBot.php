@@ -16,10 +16,6 @@ class TriviaBot
 {
 
     /**
-     * @var int
-     */
-    private $currentSet;
-    /**
      * @var string
      */
     private $currentQuestion;
@@ -50,9 +46,8 @@ class TriviaBot
         $this->bot_name = $bot_name;
         $this->channel = "";
         $this->icon_emoji = ":grinning:";
-        $this->currentSet = -1;
-        $this->currentQuestion = "";
-        $this->currentAnswer = "";
+        $this->currentQuestion = \Question::find_by_current(1);
+        $this->currentAnswer = unserialize($this->currentQuestion->answer);
     }
 
     /**
@@ -79,11 +74,12 @@ class TriviaBot
      */
     public function load($question_file,$force = false)
     {
+        $response = "";
         if (!$this->is_loaded($question_file) || $force)
         {
             //add questions from the given file to the database
             $file = __DIR__ . '/questions/' . $question_file;
-            if (is_file($file))
+            if (file_exists($file))
             {
                 $questions = file($file, FILE_IGNORE_NEW_LINES);
 
@@ -116,20 +112,27 @@ class TriviaBot
                     }
                 }
                 $total_questions = $this->get_total_questions();
-                return "Questions from *{$title}* loaded! There are *{$total_questions}* in the database.";
+                $response = "Questions from *{$title}* loaded! There are *{$total_questions}* in the database.";
             }
-            else return "No question file found";
+            else
+            {
+                $response = "No question file found";
+            }
         }
         else
         {
             $set = $this->get_question_set_by_filename($question_file);
-            return "The *{$set->title}* is already loaded!";
+            $response = "The *{$set->title}* set is already loaded!";
         }
+        return $response;
     }
 
+    /**
+     * @return mixed
+     */
     public function get_total_questions()
     {
-        return Question::count('*');
+        return \Question::count();
     }
 
     /**
@@ -142,9 +145,14 @@ class TriviaBot
         return (!empty($q));
     }
 
+    /**
+     * @param $filename
+     * @return mixed
+     */
     private function get_question_set_by_filename($filename)
     {
-        return \Question_set::find_by_filename($filename);
+        $set = \Question_set::find_by_filename($filename);
+        return $set;
     }
 
     /**
@@ -195,22 +203,6 @@ class TriviaBot
     public function setBotName($bot_name)
     {
         $this->bot_name = $bot_name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCurrentSet()
-    {
-        return $this->currentSet;
-    }
-
-    /**
-     * @param int $currentSet
-     */
-    public function setCurrentSet($currentSet)
-    {
-        $this->currentSet = $currentSet;
     }
 
     /**
