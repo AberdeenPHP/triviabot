@@ -1,5 +1,6 @@
 <?php
 
-define("SLACK_TOKEN","theValueOfYourTokenInYourOutgoingWebhookInSlack");
+define("SLACK_OUTGOING_TOKEN","theValueOfYourTokenInYourOutgoingWebhookInSlack");
+define("SLACK_INCOMING_WEBHOOK_URL","https://hooks.slack.com/services/XXXXXXXXXX/XXXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX");
 define("SLACK_CHANNEL","#trivia"); //for example
 define("SLACK_BOT_NAME","Trivia Bot"); //for example

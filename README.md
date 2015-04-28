@@ -5,3 +5,5 @@ To install run `composer require btk/triviabot dev-master`  on your server.
 
 THIS PACKAGE IS STILL IN DEVELOPMENT - seriously, it's not even ante-pre-alpha yet.
 It's strongly recommended to make the root of your webserver/subdomain the folder triviabot/src/webroot as this will keep your db and config files etc away from prying eyes.
+
+You will need to set up an incoming and an outgoing webhook in slack then add teh details to config.php
