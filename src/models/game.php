@@ -1,3 +1,5 @@
 <?php
 
-Class Game extends ActiveRecord\Model {}
+Class Game extends ActiveRecord\Model
+{
+}

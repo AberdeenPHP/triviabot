@@ -73,7 +73,8 @@ class TriviaBot
 
 
     /**
-     * @param $question_file
+     * @param bool $question_file
+     * @param bool $force
      * @return string
      */
     public function load($question_file,$force = false)

@@ -1,3 +1,5 @@
 <?php
 
-Class Question extends ActiveRecord\Model {}
+Class Question extends ActiveRecord\Model
+{
+}

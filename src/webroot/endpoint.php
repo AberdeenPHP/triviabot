@@ -28,6 +28,23 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
         $command = explode(" ", $player_text); //each word is a token for the command
         switch ($command[0])
         {
+            case "!load":
+                if (empty($command[1]))
+                {
+                    $bot->setIconEmoji(":interrobang:");
+                    die($bot->sendMessageToChannel("You forgot to tell me what file to load, silly!"));
+                }
+                elseif (empty($command[2] || $command[2] == "false"))
+                {
+                    $loaded = $bot->load($command[1]);
+                    die($bot->sendMessageToChannel($loaded));
+                }
+                else
+                {
+                    $loaded = $bot->load($command[1],true);
+                    die($bot->sendMessageToChannel($loaded));
+                }
+                break;
             case "!start":
                 //start the bot
                 $bot->setIconEmoji(":sunglasses:");

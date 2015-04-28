@@ -1,3 +1,5 @@
 <?php
 
-Class Player extends ActiveRecord\Model {}
+Class Player extends ActiveRecord\Model
+{
+}
