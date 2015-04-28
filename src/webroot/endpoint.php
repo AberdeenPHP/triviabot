@@ -9,7 +9,7 @@ namespace BTK;
 ini_set('display_errors', 1);
 require_once('../config.php');
 
-if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGOING_TOKEN && $_POST['user_name'] !== 'slackbot' && $_POST['user_id'] !== "USLACKBOT"))
+if (true || !empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGOING_TOKEN && $_POST['user_name'] !== 'slackbot' && $_POST['user_id'] !== "USLACKBOT"))
 {
     include_once('../TriviaBot.php');
 
@@ -48,6 +48,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
             case "!start":
                 //start the bot
                 $bot->setIconEmoji(":sunglasses:");
+
                 $bot->start();
                 break;
             case "!stop":
@@ -66,8 +67,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 $helpText .= "*!questions* - shows how many questions are loaded";
                 die($bot->sendMessageToChannel($helpText));
                 break;
-            default:
-                die();
+
         }
     } else
     {

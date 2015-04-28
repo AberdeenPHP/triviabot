@@ -16,11 +16,11 @@ class TriviaBot
 {
 
     /**
-     * @var string
+     * @var mixed
      */
     private $currentQuestion;
     /**
-     * @var string
+     * @var mixed
      */
     private $currentAnswer;
     /**
@@ -46,8 +46,8 @@ class TriviaBot
         $this->bot_name = $bot_name;
         $this->channel = "";
         $this->icon_emoji = ":grinning:";
-        $this->currentQuestion = \Question::find_by_current(1);
-        $this->currentAnswer = unserialize($this->currentQuestion->answer);
+        $this->currentQuestion = "";
+        $this->currentAnswer = "";
     }
 
     /**
