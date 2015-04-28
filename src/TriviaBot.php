@@ -8,44 +8,161 @@
 
 namespace BTK;
 
-class TriviaBot {
+/**
+ * Class TriviaBot
+ * @package BTK
+ */
+class TriviaBot
+{
 
+    /**
+     * @var int
+     */
     private $currentSet;
+    /**
+     * @var string
+     */
     private $currentQuestion;
+    /**
+     * @var string
+     */
     private $currentAnswer;
+    /**
+     * @var string
+     */
     private $channel;
+    /**
+     * @var string
+     */
     private $icon_emoji;
+    /**
+     * @var
+     */
     private $bot_name;
 
 
+    /**
+     * @param $bot_name
+     */
     public function __construct($bot_name)
     {
+        include_once("db.php");
         $this->bot_name = $bot_name;
         $this->channel = "";
         $this->icon_emoji = ":grinning:";
         $this->currentSet = -1;
         $this->currentQuestion = "";
-        $this->currentAnswer =  "";
+        $this->currentAnswer = "";
     }
 
+    /**
+     *
+     */
     public function start()
     {
         //set the flag in the database to say the game is running
     }
 
+    /**
+     *
+     */
     public function stop()
     {
         //set the flag in the database to say the game is not running
     }
 
-    public function load($question_file)
+
+    /**
+     * @param $question_file
+     * @return string
+     */
+    public function load($question_file,$force = false)
     {
-        //add questions from the given file to the database
+        if (!$this->is_loaded($question_file) || $force)
+        {
+            //add questions from the given file to the database
+            $file = __DIR__ . '/questions/' . $question_file;
+            if (is_file($file))
+            {
+                $questions = file($file, FILE_IGNORE_NEW_LINES);
+
+                $title = ltrim($questions[0], "# ");
+                $question_set = \Question_set::create(["filename" => $question_file, "title" => $title]);
+
+                foreach ($questions as $question)
+                {
+                    $question = trim($question);
+                    //ignore comment lines in the file
+                    if ($question[0] != "#")
+                    {
+                        //split into token parts
+                        $split = explode('|', $question);
+                        //first item is the question
+                        $q = trim(array_shift($split));
+                        if (!$this->check_question_exists($q))
+                        {
+                            if (!empty($q) && !empty($split))
+                            {
+                                $a = serialize($split);
+                                //php-activerecord automatically escapes right?
+                                \Question::create([
+                                    'set'=> $question_set->id,
+                                    'question' => $q,
+                                    'answer' => $a
+                                ]);
+                            }
+                        }
+                    }
+                }
+                $total_questions = $this->get_total_questions();
+                return "Questions from *{$title}* loaded! There are *{$total_questions}* in the database.";
+            }
+            else return "No question file found";
+        }
+        else
+        {
+            $set = $this->get_question_set_by_filename($question_file);
+            return "The *{$set->title}* is already loaded!";
+        }
     }
 
+    public function get_total_questions()
+    {
+        return Question::count('*');
+    }
+
+    /**
+     * @param $question
+     * @return bool
+     */
+    private function check_question_exists($question)
+    {
+        $q = \Question::find_by_question($question);
+        return (!empty($q));
+    }
+
+    private function get_question_set_by_filename($filename)
+    {
+        return \Question_set::find_by_filename($filename);
+    }
+
+    /**
+     * @param $set_name
+     */
     public function unload($set_name)
     {
         //remove questions from the given set name from the database
+    }
+
+
+    /**
+     * @param $question_file
+     * @return bool
+     */
+    private function is_loaded($question_file)
+    {
+        $set = \Question_set::find_by_filename($question_file);
+        return (!empty($set));
     }
 
     /**
@@ -56,10 +173,10 @@ class TriviaBot {
     public function sendMessageToChannel($message)
     {
         return json_encode(array(
-            "text"=>$message,
-            "channel"=>$this->getChannel(),
-            "username"=>$this->getBotName(),
-            "icon_emoji"=> $this->getIconEmoji())
+                "text" => $message,
+                "channel" => $this->getChannel(),
+                "username" => $this->getBotName(),
+                "icon_emoji" => $this->getIconEmoji())
         );
     }
 

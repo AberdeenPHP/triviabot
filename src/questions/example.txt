@@ -1,13 +1,15 @@
 # Example Questions
-# example.txt
 
 # This file shows an example of how to set up question files. The first line in the file should be a comment with
-# only the title of the questions and the second line the name of the file (so we can load these into the bot)
+# only the title of the questions (so we can load these into the bot)
 # Lines starting with a # are comments and will not be shown to the channel.
 
 # Blank lines or lines that consist of only spaces are also ignored.
-# Questions should be formatted as follows
+# Questions should be formatted as follows...
 # Question one? | answer one | answer two | ... | answer n
+###############################################################################
+# NOTE the pipe "|" character cannot be included in the question text itself! #
+###############################################################################
 
 # Questions are shown to channel in the format...
 
