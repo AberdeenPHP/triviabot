@@ -71,7 +71,6 @@ if (($game->last_asked + $game->delay) <= $timestamp)
         } else //by this time we just want to see the answer - no more clues!
         {
             $hint = "*Nobody got it!* The answer was _{$answer}_";
-            $hint .= "\nNext question coming up...";
 
             $question->current_hint = -1; // this gets incremented by 1 (to 0 - off) after these conditionals
             if ($game->stopping == 1)
@@ -82,6 +81,7 @@ if (($game->last_asked + $game->delay) <= $timestamp)
                 $hint .= "\n *GAME STOPPED*";
             } else
             {
+                $hint .= "\nNext question coming up...";
                 //set up the next question
                 $bot->start(); //this sets a random question's current_hint to 1
             }
