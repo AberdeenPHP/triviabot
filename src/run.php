@@ -13,6 +13,7 @@ $timestamp = time();
 if (($game->last_asked + $game->delay) <= $timestamp)
 {
     $game->last_asked = $timestamp;
+    $game->save();
     $bot = new TriviaBot("Trivia Bot");
 
     //check if there's a question being asked
@@ -69,7 +70,9 @@ if (($game->last_asked + $game->delay) <= $timestamp)
             }
         } else //by this time we just want to see the answer - no more clues!
         {
-            $hint = "*Nobody got it!* The answer was *{$answer}*";
+            $hint = "*Nobody got it!* The answer was _{$answer}_";
+            $hint .= "\nNext question coming up...";
+
             $question->current_hint = -1; // this gets incremented by 1 (to 0 - off) after these conditionals
             if ($game->stopping == 1)
             {
@@ -103,5 +106,8 @@ if (($game->last_asked + $game->delay) <= $timestamp)
         );
         $context  = stream_context_create($options);
         file_get_contents($url, false, $context);
+    }
+    else {
+        $bot->start();
     }
 }

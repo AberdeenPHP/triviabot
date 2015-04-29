@@ -15,10 +15,21 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
     include_once('../TriviaBot.php');
 
     $bot = new TriviaBot("Trivia Bot");
-    //$player_id = $_POST['user_id'];
+    $player_id = $_POST['user_id'];
     $player_name = $_POST['user_name'];
     $player_text = $_POST['text'];
     $player_channel = $_POST['channel_name'];
+    $timestamp = time();
+    $player = \Player::find("first",["slack_id"=>$player_id]);
+    if (empty($player))
+    {
+        $player = \Player::create([
+            "slack_id"=>$player_id
+        ]);
+    }
+    $player->name = $player_name;
+    $player->last_seen = $timestamp;
+    $player->save();
 
     $bot->setChannel($player_channel);
 
@@ -78,28 +89,80 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 $total = $bot->get_total_questions();
                 die($bot->sendMessageToChannel("*{$player_name}*: there are *{$total}* questions loaded in the database."));
                 break;
+            case "!seen":
+                if (empty($command[1]))
+                {
+                    $bot->setIconEmoji(":interrobang:");
+                    die($bot->sendMessageToChannel("You forgot to tell me who you're looking for!"));
+                }
+                else
+                {
+
+                }
+                break;
             case "!help":
                 //send the help text to the channel
                 $helpText = "The options available are...\n";
+                $helpText .= "*!start / !stop* - starts or stops the game.\n";
                 $helpText .= "*!questions* - shows how many questions are loaded";
                 die($bot->sendMessageToChannel($helpText));
                 break;
 
         }
-    } else
-    {
-
-        //check if a question is active
-
-        //check if the answer is correct
-
-        //add to their current monthly score
-
-        //tell the channel
     }
-} else
+    else
+    {
+        if ($bot->started())
+        {
+            //check if the answer is correct
+            $question = $bot->getCurrentQuestion();
+            $answers = unserialize($question->answer);
+            $win = false;
+            $cheat = "";
+            foreach ($answers as $answer)
+            {
+                $lowanswer = strtolower($answer);
+                $lowguess = strtolower($player_text);
+                if (strcasecmp($lowanswer, $lowguess) == 0)
+                {
+                    $win = true;
+                }
+                $cheat .= strcasecmp($lowanswer, $lowguess);
+
+            }
+            if ($win)
+            {
+                //this player's right!!
+                $score = 30 / $question->current_hint;
+                $player->current_score += $score;
+                if ($player->current_score > $player->high_score)
+                {
+                    $player->high_score = $player->current_score;
+                }
+                $player->current_run++;
+                if ($player->current_run > $player->best_run)
+                {
+                    $player->best_run = $player->current_run;
+                }
+                $player->save();
+
+                $message = "YES! *{$player_name}* got the answer for {$score} points! _{$player_text}_\n";
+                $message .= "Next question coming up...";
+                $bot->setIconEmoji(":clap:");
+                $bot->start();
+                die($bot->sendMessageToChannel($message));
+            }
+            else
+            {
+                die($bot->sendMessageToChannel($cheat));
+
+            }
+        }
+    }
+}
+else
 {
-    http_response_code(404);
+    http_response_code(200);
     die();
 }
 
