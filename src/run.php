@@ -10,7 +10,7 @@ include_once(__DIR__.'/TriviaBot.php');
 include_once(__DIR__.'/db.php');
 $game = \Game::first();
 $timestamp = time();
-if (($game->last_asked + $game->delay) <= $timestamp)
+if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
 {
     $game->last_asked = $timestamp;
     $game->save();
@@ -106,8 +106,5 @@ if (($game->last_asked + $game->delay) <= $timestamp)
         );
         $context  = stream_context_create($options);
         file_get_contents($url, false, $context);
-    }
-    else {
-        $bot->start();
     }
 }

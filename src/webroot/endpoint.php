@@ -193,7 +193,17 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 $player->save();
                 $message = "YES! *{$player_name}* that's {$player->current_run} in a row. You scored {$score} points bringing your total to {$player->current_score}!\n";
                 $message .= "The answer was _{$player_text}_!\n";
-                $message .= "Next question coming up...";
+                $game = \Game::first();
+                if (($game->stopping == 1))
+                {
+                    $game->started = 0;
+                    $game->stopping = 0;
+                    $game->save();
+                    $message .= "*GAME STOPPED*";
+                } else
+                {
+                    $message .= "Next question coming up...";
+                }
                 $bot->setIconEmoji(":clap:");
                 $bot->start();
                 die($bot->sendMessageToChannel($message));
