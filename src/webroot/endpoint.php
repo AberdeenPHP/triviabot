@@ -196,6 +196,8 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 $game = \Game::first();
                 if (($game->stopping == 1))
                 {
+                    $question->current_hint = 0;
+                    $question->save();
                     $game->started = 0;
                     $game->stopping = 0;
                     $game->save();
@@ -203,9 +205,9 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 } else
                 {
                     $message .= "Next question coming up...";
+                    $bot->start();
                 }
                 $bot->setIconEmoji(":clap:");
-                $bot->start();
                 die($bot->sendMessageToChannel($message));
             }
         }

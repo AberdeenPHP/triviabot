@@ -107,4 +107,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
         $context  = stream_context_create($options);
         file_get_contents($url, false, $context);
     }
+    else {
+        $bot->start();
+    }
 }
