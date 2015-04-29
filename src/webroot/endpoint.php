@@ -9,7 +9,7 @@ namespace BTK;
 ini_set('display_errors', 1);
 require_once('../config.php');
 
-if (true || !empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGOING_TOKEN && $_POST['user_name'] !== 'slackbot' && $_POST['user_id'] !== "USLACKBOT"))
+if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGOING_TOKEN && $_POST['user_name'] !== 'slackbot' && $_POST['user_id'] !== "USLACKBOT"))
 {
     include_once('../TriviaBot.php');
 
@@ -47,15 +47,31 @@ if (true || !empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLA
                 break;
             case "!start":
                 //start the bot
-                $bot->setIconEmoji(":sunglasses:");
-
-                $bot->start();
+                if (!$bot->started())
+                {
+                    $bot->setIconEmoji(":sunglasses:");
+                    $bot->start();
+                    die($bot->sendMessageToChannel("Thanks {$player_name}, I was getting bored! More trivia coming up!"));
+                }
+                else
+                {
+                    $bot->setIconEmoji(":stuck_out_tongue_winking_eye:");
+                    die($bot->sendMessageToChannel("Pay attention {$player_name}, we're already playing trivia!"));
+                }
                 break;
             case "!stop":
-                //stop the bot after this question
-                $bot->setIconEmoji(":hand:");
-                $bot->stop();
-                die($bot->sendMessageToChannel("*Game stopped by {$player_name} after this question*"));
+                if (!$bot->started())
+                {
+                    $bot->setIconEmoji(":stuck_out_tongue_winking_eye:");
+                    die($bot->sendMessageToChannel("We're not even playing trivia {$player_name}! (Type *!start* if you want to play)"));
+                }
+                else
+                {
+                    //stop the bot after this question
+                    $bot->setIconEmoji(":hand:");
+                    $bot->stop();
+                    die($bot->sendMessageToChannel("*Game stopped by {$player_name} after this question*"));
+                }
                 break;
             case "!questions":
                 $total = $bot->get_total_questions();

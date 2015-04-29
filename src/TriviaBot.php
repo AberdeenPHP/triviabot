@@ -15,27 +15,9 @@ namespace BTK;
 class TriviaBot
 {
 
-    /**
-     * @var mixed
-     */
-    private $currentQuestion;
-    /**
-     * @var mixed
-     */
-    private $currentAnswer;
-    /**
-     * @var string
-     */
     private $channel;
-    /**
-     * @var string
-     */
     private $icon_emoji;
-    /**
-     * @var
-     */
     private $bot_name;
-
 
     /**
      * @param $bot_name
@@ -46,8 +28,6 @@ class TriviaBot
         $this->bot_name = $bot_name;
         $this->channel = "";
         $this->icon_emoji = ":grinning:";
-        $this->currentQuestion = "";
-        $this->currentAnswer = "";
     }
 
     /**
@@ -55,7 +35,26 @@ class TriviaBot
      */
     public function start()
     {
-        //set the flag in the database to say the game is running
+        $game = \Game::first();
+        if (empty($game))
+        {
+            $game = \Game::create(["started"=>0,"stopping"=>0,"delay"=>20]);
+        }
+        $questions = \Question::all();
+        //set all questions to OFF
+        foreach($questions as $question)
+        {
+            $question->current_hint = 0;
+            $question->save();
+        }
+        //set a random question to ON
+        shuffle($questions);
+        $currentQuestion = $questions[0];
+        $currentQuestion->current_hint = 1;
+        $currentQuestion->save();
+
+        $game->started = 1;
+        $game->save();
     }
 
     /**
@@ -64,6 +63,14 @@ class TriviaBot
     public function stop()
     {
         //set the flag in the database to say the game is not running
+        $game = \Game::first();
+        $game->stopping = 1;
+        $game->save();
+    }
+
+    public function getCurrentQuestion()
+    {
+        return \Question::find('first',array('conditions' => 'current_hint > 0'));
     }
 
 
@@ -205,37 +212,6 @@ class TriviaBot
         $this->bot_name = $bot_name;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrentQuestion()
-    {
-        return $this->currentQuestion;
-    }
-
-    /**
-     * @param string $currentQuestion
-     */
-    public function setCurrentQuestion($currentQuestion)
-    {
-        $this->currentQuestion = $currentQuestion;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCurrentAnswer()
-    {
-        return $this->currentAnswer;
-    }
-
-    /**
-     * @param string $currentAnswer
-     */
-    public function setCurrentAnswer($currentAnswer)
-    {
-        $this->currentAnswer = $currentAnswer;
-    }
 
     /**
      * @return mixed
@@ -269,4 +245,9 @@ class TriviaBot
         $this->icon_emoji = $icon_emoji;
     }
 
+    public function started()
+    {
+        $game = \Game::first();
+        return ($game->started == 1);
+    }
 }
