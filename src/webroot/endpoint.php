@@ -6,6 +6,8 @@
  */
 
 namespace BTK;
+use ActiveRecord\DateTime;
+
 ini_set('display_errors', 1);
 require_once('../config.php');
 include_once('../db.php');
@@ -97,14 +99,47 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 }
                 else
                 {
+                    $seen_name = trim($command[1]);
+                    $seen_player = \Player::find('first',['name'=>$seen_name]);
+                    $now = time();
+                    if (empty($seen_player))
+                    {
+                        $message = "Sorry, {$player_name}, I've never seen {$seen_name}!";
+                    }
+                    else
+                    {
+                        $diff = $now - $seen_player->last_seen;
+                        $message = "Hey {$player_name}, I last saw {$seen_name} *{$diff}* seconds ago!";
+                    }
+                    die($bot->sendMessageToChannel($message));
+
 
                 }
+                break;
+            case "!scores":
+                $message = "The top 3 high scores are:\n";
+                $scorers = \Player::find('all',array("order"=>"high_score DESC", "limit"=>3));
+                foreach ($scorers as $scorer)
+                {
+                    $message .= "*{$scorer->name}* : {$scorer->high_score}\n";
+                }
+                die($bot->sendMessageToChannel($message));
+                break;
+            case "!runs":
+                $message = "The top 3 best runs are:\n";
+                $scorers = \Player::find('all',array("order"=>"best_run DESC", "limit"=>3));
+                foreach ($scorers as $scorer)
+                {
+                    $message .= "*{$scorer->name}* : {$scorer->best_run}\n";
+                }
+                die($bot->sendMessageToChannel($message));
                 break;
             case "!help":
                 //send the help text to the channel
                 $helpText = "The options available are...\n";
                 $helpText .= "*!start / !stop* - starts or stops the game.\n";
-                $helpText .= "*!questions* - shows how many questions are loaded";
+                $helpText .= "*!questions* - shows how many questions are loaded\n";
+                $helpText .= "*!seen [player]* - says when the player last typed something in channel\n";
                 die($bot->sendMessageToChannel($helpText));
                 break;
 
@@ -116,6 +151,10 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
         {
             //check if the answer is correct
             $question = $bot->getCurrentQuestion();
+            if ($question->current_hint == 1) //the question's not been asked yet!
+            {
+                die();
+            }
             $answers = unserialize($question->answer);
             $win = false;
             foreach ($answers as $answer)
@@ -130,7 +169,18 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
             if ($win)
             {
                 //this player's right!!
-                $score = 30 / $question->current_hint;
+                $others = \Player::find('all', array('conditions' => "id != {$player->id}"));
+                if (!empty($others))
+                {
+                    foreach ($others as $other)
+                    {
+                        $other->current_run = 0;
+                        $other->current_score = 0;
+                        $other->save();
+                    }
+                }
+
+                $score = 60 / $question->current_hint;
                 $player->current_score += $score;
                 if ($player->current_score > $player->high_score)
                 {
@@ -142,8 +192,8 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                     $player->best_run = $player->current_run;
                 }
                 $player->save();
-
-                $message = "YES! *{$player_name}* got the answer for {$score} points! _{$player_text}_\n";
+                $message = "YES! *{$player_name}* that's {$player->current_run} in a row. You scored {$score} points bringing your total to {$player->current_score}!\n";
+                $message .= "The answer was _{$player_text}_!\n";
                 $message .= "Next question coming up...";
                 $bot->setIconEmoji(":clap:");
                 $bot->start();

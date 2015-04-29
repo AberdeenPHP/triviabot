@@ -45,7 +45,7 @@ if (($game->last_asked + $game->delay) <= $timestamp)
         {
             foreach ($letters as $key => $letter)
             {
-                if ($previousLetter == " " || $letter == " " || $key < 3)
+                if ($previousLetter == " " || $letter == " " || $key <= 3)
                 {
                     $hint .= $letter;
                 } else
@@ -59,7 +59,7 @@ if (($game->last_asked + $game->delay) <= $timestamp)
         {
             foreach ($letters as $key => $letter)
             {
-                if ($previousLetter == " " || $letter == " " || $key < 3 || stripos("aeiou", $letter))
+                if ($previousLetter == " " || $letter == " " || $key <= 3 || stripos("aeiou", $letter))
                 {
                     $hint .= $letter;
                 } else
