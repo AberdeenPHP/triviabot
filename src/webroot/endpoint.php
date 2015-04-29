@@ -6,7 +6,6 @@
  */
 
 namespace BTK;
-use ActiveRecord\DateTime;
 
 ini_set('display_errors', 1);
 require_once('../config.php');
