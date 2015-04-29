@@ -118,17 +118,14 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
             $question = $bot->getCurrentQuestion();
             $answers = unserialize($question->answer);
             $win = false;
-            $cheat = "";
             foreach ($answers as $answer)
             {
                 $lowanswer = strtolower($answer);
                 $lowguess = strtolower($player_text);
-                if (strcasecmp($lowanswer, $lowguess) == 0)
+                if (trim($lowanswer) == trim($lowguess)) // Y U NO WORK!?!?
                 {
                     $win = true;
                 }
-                $cheat .= strcasecmp($lowanswer, $lowguess);
-
             }
             if ($win)
             {
@@ -151,11 +148,6 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 $bot->setIconEmoji(":clap:");
                 $bot->start();
                 die($bot->sendMessageToChannel($message));
-            }
-            else
-            {
-                die($bot->sendMessageToChannel($cheat));
-
             }
         }
     }
