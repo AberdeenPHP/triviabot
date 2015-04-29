@@ -7,13 +7,11 @@ namespace BTK;
 ini_set('display_errors', 1);
 include_once(__DIR__.'/config.php');
 include_once(__DIR__.'/TriviaBot.php');
-
+include_once(__DIR__.'/db.php');
 $game = \Game::first();
 $timestamp = time();
-
-if (($game->last_asked + $game->delay) > $timestamp)
+if (($game->last_asked + $game->delay) <= $timestamp)
 {
-
     $game->last_asked = $timestamp;
     $bot = new TriviaBot("Trivia Bot");
 
@@ -21,7 +19,7 @@ if (($game->last_asked + $game->delay) > $timestamp)
     $question = $bot->getCurrentQuestion();
     if (!empty($question))
     {
-        $hint = "*Hint*: "; //this will hold our hint
+        $hint = "*Hint {$question->current_hint}*: "; //this will hold our hint
         //get the (first) possible answer
         $answer = unserialize($question->answer)[0];
         $letters = str_split($answer);
@@ -71,7 +69,7 @@ if (($game->last_asked + $game->delay) > $timestamp)
             }
         } else //by this time we just want to see the answer - no more clues!
         {
-            $hint = $answer;
+            $hint = "*Nobody got it!* The answer was *{$answer}*";
             $question->current_hint = -1; // this gets incremented by 1 (to 0 - off) after these conditionals
             if ($game->stopping == 1)
             {
@@ -91,6 +89,7 @@ if (($game->last_asked + $game->delay) > $timestamp)
         //send the question and hint/answer to channel
 
         $message = "{$question->question}\n{$hint}";
+        echo "Messsage: $message";
         $url = SLACK_INCOMING_WEBHOOK_URL;
         $data = ['payload'=>$bot->sendMessageToChannel($message)];
 
@@ -104,6 +103,5 @@ if (($game->last_asked + $game->delay) > $timestamp)
         );
         $context  = stream_context_create($options);
         file_get_contents($url, false, $context);
-
     }
 }

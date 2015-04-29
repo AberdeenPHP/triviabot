@@ -8,6 +8,7 @@
 namespace BTK;
 ini_set('display_errors', 1);
 require_once('../config.php');
+include_once('../db.php');
 
 if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGOING_TOKEN && $_POST['user_name'] !== 'slackbot' && $_POST['user_id'] !== "USLACKBOT"))
 {

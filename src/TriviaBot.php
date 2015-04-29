@@ -24,7 +24,6 @@ class TriviaBot
      */
     public function __construct($bot_name)
     {
-        include_once("db.php");
         $this->bot_name = $bot_name;
         $this->channel = "";
         $this->icon_emoji = ":grinning:";
