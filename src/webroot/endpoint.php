@@ -97,6 +97,27 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                     die($bot->sendMessageToChannel($message));
                 }
                 break;
+            case "delay":
+            {
+                if (empty($command[2]) || !is_numeric($command[2]))
+                {
+                    $bot->setIconEmoji(":interrobang:");
+                    die($bot->sendMessageToChannel("You forgot to tell me how long to set the delay!"));
+                } else {
+                    if (($command[2] > 20))
+                    {
+                        $game->delay = $command[2];
+                        $delay = $command[2];
+                    } else
+                    {
+                        $game->delay = 20;
+                        $delay = 20;
+                    }
+                    $game->save();
+                    die($bot->sendMessageToChannel("Delay set to {$delay} seconds between hints."));
+                }
+
+            }
             case "questions":
                 $total = $bot->get_total_questions();
                 die($bot->sendMessageToChannel("*{$player_name}*: there are *{$total}* questions loaded in the database."));
@@ -118,7 +139,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                     }
                     else
                     {
-                        $diff = $now - $seen_player->last_seen;
+                        $diff = number_format($now - $seen_player->last_seen);
                         $message = "Hey {$player_name}, I last saw {$seen_name} *{$diff}* seconds ago!";
                     }
                     die($bot->sendMessageToChannel($message));
@@ -134,7 +155,8 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 {
                     foreach ($scorers as $scorer)
                     {
-                        $message .= "*{$scorer->name}* : {$scorer->high_score}\n";
+                        $score = number_format($scorer->high_score);
+                        $message .= "*{$scorer->name}* : {$score}\n";
                     }
                 }
                 die($bot->sendMessageToChannel($message));
@@ -146,7 +168,8 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 {
                     foreach ($scorers as $scorer)
                     {
-                        $message .= "*{$scorer->name}* : {$scorer->best_run}\n";
+                        $runs = number_format($scorer->best_run);
+                        $message .= "*{$scorer->name}* : {$runs}\n";
                     }
                 }
                 die($bot->sendMessageToChannel($message));
@@ -156,17 +179,20 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 $month = $months[$player->playing_month];
                 $bot->setIconEmoji(":ok_hand:");
                 $message = "Information for *{$player_name}*:\n";
-                $message .= "Current score (played in {$month}): *{$player->current_score}*\n";
-                $message .= "High score: *{$player->high_score}*\n";
-                $message .= "Most questions answered in a row: *{$player->best_run}*";
+                $message .= "Current score (played in {$month}): *".number_format($player->current_score)."*\n";
+                $message .= "High score: *".number_format($player->high_score)."*\n";
+                $message .= "Most questions answered in a row: *".number_format($player->best_run)."*";
                 die($bot->sendMessageToChannel($message));
                 break;
             case "help":
                 //send the help text to the channel
                 $helpText = "The options available are...\n";
                 $helpText .= "*!trivia start / !trivia stop* - starts or stops the game.\n";
+                $helpText .= "*!trivia delay [n]* - set the minimum time between hints in seconds.\n";
+
                 $helpText .= "*!trivia scores / !trivia runs* - shows the top 3 high scorers / best runs.\n";
                 $helpText .= "*!trivia questions* - shows how many questions are loaded\n";
+                $helpText .= "*!trivia me* - get details on your own scoring.\n";
                 $helpText .= "*!trivia seen [player]* - says when the player last typed something in channel\n";
                 die($bot->sendMessageToChannel($helpText));
                 break;
@@ -224,7 +250,8 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                     $player->best_run = $player->current_run;
                 }
                 $player->save();
-                $message = "YES! *{$player_name}* that's {$player->current_run} in a row. You scored {$score} points bringing your total for the month to {$player->current_score}!\n";
+                $totalscore = number_format($player->current_score);
+                $message = "YES! *{$player_name}* that's {$player->current_run} in a row. You scored {$score} points bringing your total for the month to {$totalscore}!\n";
                 $message .= "The answer was _{$player_text}_!\n";
                 $game->questions_without_reply = 0;
                 if (($game->stopping == 1))
