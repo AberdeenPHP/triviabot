@@ -16,6 +16,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
     include_once('../TriviaBot.php');
 
     $bot = new TriviaBot("Trivia Bot");
+    $game = \Game::first();
     $player_id = $_POST['user_id'];
     $player_name = $_POST['user_name'];
     $player_text = $_POST['text'];
@@ -79,10 +80,21 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 }
                 else
                 {
-                    //stop the bot after this question
                     $bot->setIconEmoji(":hand:");
-                    $bot->stop();
-                    die($bot->sendMessageToChannel("*Game stopped by {$player_name} after this question*"));
+                    $question = $bot->getCurrentQuestion();
+                    $message = "*Game stopped by {$player_name}*";
+                    if (empty($question) || $question->current_hint == 1)
+                    {
+                        $game->started = 0;
+                        $game->stopping = 0;
+                        $game->save();
+                    }
+                    else
+                    {
+                        $message .= " _but I've started so I'll finish..._";
+                        $bot->stop();
+                    }
+                    die($bot->sendMessageToChannel($message));
                 }
                 break;
             case "questions":
@@ -185,7 +197,6 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
             if ($win)
             {
                 //this player's right!!
-                $game = \Game::first();
                 $others = \Player::find('all', array('conditions' => "id != {$player->id}"));
                 $player->playing_month = date("n");
                 if (!empty($others))
