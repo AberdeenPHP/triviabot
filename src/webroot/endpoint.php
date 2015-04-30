@@ -117,18 +117,25 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
             case "scores":
                 $message = "The top 3 high scores are:\n";
                 $scorers = \Player::find('all',array("order"=>"high_score DESC", "limit"=>3));
-                foreach ($scorers as $scorer)
+
+                if (!empty($scorers))
                 {
-                    $message .= "*{$scorer->name}* : {$scorer->high_score}\n";
+                    foreach ($scorers as $scorer)
+                    {
+                        $message .= "*{$scorer->name}* : {$scorer->high_score}\n";
+                    }
                 }
                 die($bot->sendMessageToChannel($message));
                 break;
             case "runs":
                 $message = "The top 3 best runs are:\n";
                 $scorers = \Player::find('all',array("order"=>"best_run DESC", "limit"=>3));
-                foreach ($scorers as $scorer)
+                if (!empty($scorers))
                 {
-                    $message .= "*{$scorer->name}* : {$scorer->best_run}\n";
+                    foreach ($scorers as $scorer)
+                    {
+                        $message .= "*{$scorer->name}* : {$scorer->best_run}\n";
+                    }
                 }
                 die($bot->sendMessageToChannel($message));
                 break;
