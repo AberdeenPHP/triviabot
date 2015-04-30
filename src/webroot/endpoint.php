@@ -34,31 +34,30 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
 
     $bot->setChannel($player_channel);
 
+    $command = explode(" ", $player_text); //each word is a token for the command
 
-    //check if it's a command for the bot !start !stop !load !delay etc.
-    if (trim($player_text)[0] == "!") //commands start with a ! character
+    if ($command[0] == "!trivia") //commands start with !trivia
     {
-        $command = explode(" ", $player_text); //each word is a token for the command
-        switch ($command[0])
+        switch ($command[1])
         {
-            case "!load":
-                if (empty($command[1]))
+            case "load":
+                if (empty($command[2]))
                 {
                     $bot->setIconEmoji(":interrobang:");
                     die($bot->sendMessageToChannel("You forgot to tell me what file to load, silly!"));
                 }
-                elseif (empty($command[2]) || $command[2] == "false")
+                elseif (empty($command[3]) || $command[3] == "false")
                 {
-                    $loaded = $bot->load($command[1]);
+                    $loaded = $bot->load($command[2]);
                     die($bot->sendMessageToChannel($loaded));
                 }
                 else
                 {
-                    $loaded = $bot->load($command[1],true);
+                    $loaded = $bot->load($command[2],true);
                     die($bot->sendMessageToChannel($loaded));
                 }
                 break;
-            case "!start":
+            case "start":
                 //start the bot
                 if (!$bot->started())
                 {
@@ -72,11 +71,11 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                     die($bot->sendMessageToChannel("Pay attention {$player_name}, we're already playing trivia!"));
                 }
                 break;
-            case "!stop":
+            case "stop":
                 if (!$bot->started())
                 {
                     $bot->setIconEmoji(":stuck_out_tongue_winking_eye:");
-                    die($bot->sendMessageToChannel("We're not even playing trivia {$player_name}! (Type *!start* if you want to play)"));
+                    die($bot->sendMessageToChannel("We're not even playing trivia {$player_name}! (Type *!trivia start* if you want to play)"));
                 }
                 else
                 {
@@ -86,19 +85,19 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                     die($bot->sendMessageToChannel("*Game stopped by {$player_name} after this question*"));
                 }
                 break;
-            case "!questions":
+            case "questions":
                 $total = $bot->get_total_questions();
                 die($bot->sendMessageToChannel("*{$player_name}*: there are *{$total}* questions loaded in the database."));
                 break;
-            case "!seen":
-                if (empty($command[1]))
+            case "seen":
+                if (empty($command[2]))
                 {
                     $bot->setIconEmoji(":interrobang:");
                     die($bot->sendMessageToChannel("You forgot to tell me who you're looking for!"));
                 }
                 else
                 {
-                    $seen_name = trim($command[1]);
+                    $seen_name = trim($command[2]);
                     $seen_player = \Player::find('first',['name'=>$seen_name]);
                     $now = time();
                     if (empty($seen_player))
@@ -115,7 +114,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
 
                 }
                 break;
-            case "!scores":
+            case "scores":
                 $message = "The top 3 high scores are:\n";
                 $scorers = \Player::find('all',array("order"=>"high_score DESC", "limit"=>3));
                 foreach ($scorers as $scorer)
@@ -124,7 +123,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 }
                 die($bot->sendMessageToChannel($message));
                 break;
-            case "!runs":
+            case "runs":
                 $message = "The top 3 best runs are:\n";
                 $scorers = \Player::find('all',array("order"=>"best_run DESC", "limit"=>3));
                 foreach ($scorers as $scorer)
@@ -133,13 +132,23 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 }
                 die($bot->sendMessageToChannel($message));
                 break;
-            case "!help":
+            case "me":
+                $months = ["Never","January","February","March","April","May","June","July","August","September","October","November","December"];
+                $month = $months[$player->playing_month];
+                $bot->setIconEmoji(":ok_hand:");
+                $message = "Information for *{$player_name}*:\n";
+                $message .= "Current score (played in {$month}): *{$player->current_score}*\n";
+                $message .= "High score: *{$player->high_score}*\n";
+                $message .= "Most questions answered in a row: *{$player->best_run}*";
+                die($bot->sendMessageToChannel($message));
+                break;
+            case "help":
                 //send the help text to the channel
                 $helpText = "The options available are...\n";
-                $helpText .= "*!start / !stop* - starts or stops the game.\n";
-                $helpText .= "*!scores / !runs* - shows the top 3 high scorers / best runs.\n";
-                $helpText .= "*!questions* - shows how many questions are loaded\n";
-                $helpText .= "*!seen [player]* - says when the player last typed something in channel\n";
+                $helpText .= "*!trivia start / !trivia stop* - starts or stops the game.\n";
+                $helpText .= "*!trivia scores / !trivia runs* - shows the top 3 high scorers / best runs.\n";
+                $helpText .= "*!trivia questions* - shows how many questions are loaded\n";
+                $helpText .= "*!trivia seen [player]* - says when the player last typed something in channel\n";
                 die($bot->sendMessageToChannel($helpText));
                 break;
 
@@ -169,18 +178,23 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
             if ($win)
             {
                 //this player's right!!
+                $game = \Game::first();
                 $others = \Player::find('all', array('conditions' => "id != {$player->id}"));
+                $player->playing_month = date("n");
                 if (!empty($others))
                 {
                     foreach ($others as $other)
                     {
                         $other->current_run = 0;
-                        $other->current_score = 0;
                         $other->save();
                     }
                 }
 
                 $score = 50 - ($question->current_hint * 10);
+                if ($player->playing_month != $game->round_month)
+                {
+                    $player->current_score = 0;
+                }
                 $player->current_score += $score;
                 if ($player->current_score > $player->high_score)
                 {
@@ -192,22 +206,22 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                     $player->best_run = $player->current_run;
                 }
                 $player->save();
-                $message = "YES! *{$player_name}* that's {$player->current_run} in a row. You scored {$score} points bringing your total to {$player->current_score}!\n";
+                $message = "YES! *{$player_name}* that's {$player->current_run} in a row. You scored {$score} points bringing your total for the month to {$player->current_score}!\n";
                 $message .= "The answer was _{$player_text}_!\n";
-                $game = \Game::first();
+                $game->questions_without_reply = 0;
                 if (($game->stopping == 1))
                 {
                     $question->current_hint = 0;
                     $question->save();
                     $game->started = 0;
                     $game->stopping = 0;
-                    $game->save();
                     $message .= "*GAME STOPPED*";
                 } else
                 {
                     $message .= "Next question coming up...";
                     $bot->start();
                 }
+                $game->save();
                 $bot->setIconEmoji(":clap:");
                 die($bot->sendMessageToChannel($message));
             }

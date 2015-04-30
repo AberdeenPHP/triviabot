@@ -13,6 +13,7 @@ $timestamp = time();
 if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
 {
     $game->last_asked = $timestamp;
+    $game->round_month = date("n");
     $game->save();
     $bot = new TriviaBot("Trivia Bot");
 
@@ -32,7 +33,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
         {
             foreach ($letters as $letter)
             {
-                if ($previousLetter == " " || $letter == " " || stripos("abcdefghijklmnopqrstuvwxyz", $letter) === false)
+                if ($letter == " " || stripos("abcdefghijklmnopqrstuvwxyz1234567890", $letter) === false)
                 {
                     $hint .= $letter;
                 } else
@@ -46,7 +47,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
         {
             foreach ($letters as $key => $letter)
             {
-                if ($previousLetter == " " || $letter == " " || stripos("abcdefghijklmnopqrstuvwxyz", $letter) === false || $key <= 2)
+                if ($previousLetter == " " || $letter == " " || stripos("abcdefghijklmnopqrstuvwxyz1234567890", $letter) === false || $key <= 2)
                 {
                     $hint .= $letter;
                 } else
@@ -60,7 +61,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
         {
             foreach ($letters as $key => $letter)
             {
-                if ($previousLetter == " " || $letter == " " || stripos("abcdefghijklmnopqrstuvwxyz", $letter) === false || $key <= 2 || stripos("aeiou", $letter) > -1)
+                if ($previousLetter == " " || $letter == " " || stripos("abcdefghijklmnopqrstuvwxyz1234567890", $letter) === false || $key <= 2 || stripos("aeiou", $letter) > -1)
                 {
                     $hint .= $letter;
                 } else
@@ -85,7 +86,6 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
             {
                 $game->started = 0;
                 $game->stopping = 0;
-                $game->save();
                 $hint .= "\n *GAME STOPPED*";
             } else
             {
@@ -94,6 +94,8 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
                 $bot->start(); //this sets a random question's current_hint to 1
             }
         }
+        $game->save();
+
         $question->current_hint = $question->current_hint + 1;
         $question->save();
 
