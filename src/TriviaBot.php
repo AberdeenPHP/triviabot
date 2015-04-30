@@ -39,14 +39,12 @@ class TriviaBot
         {
             $game = \Game::create(["started"=>0,"stopping"=>0,"delay"=>20]);
         }
-        $questions = \Question::all();
         //set all questions to OFF
         \Question::update_all(array('set' => 'current_hint = 0'));
         //set a random question to ON
-        shuffle($questions);
-        $currentQuestion = $questions[0];
-        $currentQuestion->current_hint = 1;
-        $currentQuestion->save();
+        $question = \Question::find('first',array("order"=>"id BY RAND()"));
+        $question->current_hint = 1;
+        $question->save();
 
         $game->started = 1;
         $game->save();
@@ -114,17 +112,17 @@ class TriviaBot
                     }
                 }
                 $total_questions = $this->get_total_questions();
-                $response = "Questions from *{$title}* loaded! There are *{$total_questions}* in the database.";
+                $response .= "Questions from *{$title}* loaded! There are *{$total_questions}* in the database.";
             }
             else
             {
-                $response = "No question file found";
+                $response .= "No question file found";
             }
         }
         else
         {
             $set = $this->get_question_set_by_filename($question_file);
-            $response = "The *{$set->title}* set is already loaded!";
+            $response .= "The *{$set->title}* set is already loaded!";
         }
         return $response;
     }
