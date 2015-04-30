@@ -119,7 +119,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
 
             }
             case "questions":
-                $total = $bot->get_total_questions();
+                $total = number_format($bot->get_total_questions());
                 die($bot->sendMessageToChannel("*{$player_name}*: there are *{$total}* questions loaded in the database."));
                 break;
             case "seen":

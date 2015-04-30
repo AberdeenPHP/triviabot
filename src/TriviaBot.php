@@ -40,7 +40,13 @@ class TriviaBot
             $game = \Game::create(["started"=>0,"stopping"=>0,"delay"=>20]);
         }
         //set all questions to OFF
-        \Question::update_all(array('set' => 'current_hint = 0'));
+        while (!empty($this->getCurrentQuestion()))
+        {
+            $on = $this->getCurrentQuestion();
+            $on->current_hint = 0;
+            $on->save();
+        }
+        // \Question::update_all(array('set' => 'current_hint = 0'));
         //set a random question to ON
         $question = \Question::find('first',array("order"=>"RAND()"));
         $question->current_hint = 1;
@@ -102,7 +108,7 @@ class TriviaBot
                                 @TODO Make this more efficient!
                                 @TODO Try array_diff for all questions then in_array this question maybe?
                             */
-                            if (!$this->check_question_exists($q))
+                            if (true || !$this->check_question_exists($q)) //this is mental, just accept the dupes!
                             {
                                 $a = serialize($split);
                                 //php-activerecord automatically escapes right?
