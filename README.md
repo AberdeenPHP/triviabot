@@ -11,7 +11,7 @@ Things you'll need to set up if you want this to run:
 * Incoming webhook integration in slack (put these in config.php)
 * Outgoing webhook in slack (put these in config.php)
 * A way of running a script at an interval (e.g. CRON) (you want to run vendor/btk/triviabot/src/run.php as often as you can stomach)
-* DB details (put these in db.php)
+* DB details (put these in config.php)
 
 Your webserver should ideally use a subdomain where webroot is the folder /vendor/btk/triviabot/src/webroot/ so your outgoing webhook URL can be, e.g. http://triviabot.example.com/endpoint.php
 
