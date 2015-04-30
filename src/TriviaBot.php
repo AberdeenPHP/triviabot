@@ -42,7 +42,7 @@ class TriviaBot
         //set all questions to OFF
         \Question::update_all(array('set' => 'current_hint = 0'));
         //set a random question to ON
-        $question = \Question::find('first',array("order"=>"id BY RAND()"));
+        $question = \Question::find('first',array("order"=>"RAND()"));
         $question->current_hint = 1;
         $question->save();
 
@@ -96,9 +96,13 @@ class TriviaBot
                         $split = explode('|', $question);
                         //first item is the question
                         $q = trim(array_shift($split));
-                        if (!$this->check_question_exists($q))
+                        if (!empty($q) && !empty($split))
                         {
-                            if (!empty($q) && !empty($split))
+                            /*
+                                @TODO Make this more efficient!
+                                @TODO Try array_diff for all questions then in_array this question maybe?
+                            */
+                            if (!$this->check_question_exists($q))
                             {
                                 $a = serialize($split);
                                 //php-activerecord automatically escapes right?
