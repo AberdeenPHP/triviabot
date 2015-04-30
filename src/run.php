@@ -73,6 +73,12 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
             $hint = "*Nobody got it!* The answer was _{$answer}_";
 
             $question->current_hint = -1; // this gets incremented by 1 (to 0 - off) after these conditionals
+            $game->questions_without_reply++;
+            if ($game->questions_without_reply == 10)
+            {
+                $game->stopping = 1;
+                $hint .= "\nNobody appears to be playing!";
+            }
             if ($game->stopping == 1)
             {
                 $game->started = 0;

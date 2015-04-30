@@ -137,6 +137,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 //send the help text to the channel
                 $helpText = "The options available are...\n";
                 $helpText .= "*!start / !stop* - starts or stops the game.\n";
+                $helpText .= "*!scores / !runs* - shows the top 3 high scorers / best runs.\n";
                 $helpText .= "*!questions* - shows how many questions are loaded\n";
                 $helpText .= "*!seen [player]* - says when the player last typed something in channel\n";
                 die($bot->sendMessageToChannel($helpText));
@@ -179,7 +180,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                     }
                 }
 
-                $score = 60 / $question->current_hint;
+                $score = 50 - ($question->current_hint * 10);
                 $player->current_score += $score;
                 if ($player->current_score > $player->high_score)
                 {
