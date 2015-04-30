@@ -41,11 +41,7 @@ class TriviaBot
         }
         $questions = \Question::all();
         //set all questions to OFF
-        foreach($questions as $question)
-        {
-            $question->current_hint = 0;
-            $question->save();
-        }
+        \Question::update_all(array('set' => 'current_hint = 0'));
         //set a random question to ON
         shuffle($questions);
         $currentQuestion = $questions[0];

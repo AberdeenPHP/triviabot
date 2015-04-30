@@ -20,6 +20,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
     $question = $bot->getCurrentQuestion();
     if (!empty($question))
     {
+        $questiontext = $question->question;
         $hint = "*Hint {$question->current_hint}*: "; //this will hold our hint
         //get the (first) possible answer
         $answer = unserialize($question->answer)[0];
@@ -31,7 +32,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
         {
             foreach ($letters as $letter)
             {
-                if ($previousLetter == " " || $letter == " ")
+                if ($previousLetter == " " || $letter == " " || stripos("abcdefghijklmnopqrstuvwxyz", $letter) === false)
                 {
                     $hint .= $letter;
                 } else
@@ -45,7 +46,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
         {
             foreach ($letters as $key => $letter)
             {
-                if ($previousLetter == " " || $letter == " " || $key <= 3)
+                if ($previousLetter == " " || $letter == " " || stripos("abcdefghijklmnopqrstuvwxyz", $letter) === false || $key <= 2)
                 {
                     $hint .= $letter;
                 } else
@@ -59,7 +60,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
         {
             foreach ($letters as $key => $letter)
             {
-                if ($previousLetter == " " || $letter == " " || $key <= 3 || stripos("aeiou", $letter))
+                if ($previousLetter == " " || $letter == " " || stripos("abcdefghijklmnopqrstuvwxyz", $letter) === false || $key <= 2 || stripos("aeiou", $letter) > -1)
                 {
                     $hint .= $letter;
                 } else
@@ -70,6 +71,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
             }
         } else //by this time we just want to see the answer - no more clues!
         {
+            $questiontext = "";
             $hint = "*Nobody got it!* The answer was _{$answer}_";
 
             $question->current_hint = -1; // this gets incremented by 1 (to 0 - off) after these conditionals
@@ -97,7 +99,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
 
         //send the question and hint/answer to channel
 
-        $message = "{$question->question}\n{$hint}";
+        $message = "{$questiontext}\n{$hint}";
         echo "Messsage: $message";
         $url = SLACK_INCOMING_WEBHOOK_URL;
         $data = ['payload'=>$bot->sendMessageToChannel($message)];
