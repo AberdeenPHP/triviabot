@@ -111,12 +111,18 @@ class TriviaBot
                             if (true || !$this->check_question_exists($q)) //this is mental, just accept the dupes!
                             {
                                 $a = serialize($split);
-                                //php-activerecord automatically escapes right?
-                                \Question::create([
-                                    'question_set'=> $question_set->id,
-                                    'question' => $q,
-                                    'answer' => $a
-                                ]);
+                                try
+                                {
+                                    //php-activerecord automatically escapes right?
+                                    \Question::create([
+                                        'question_set' => $question_set->id,
+                                        'question' => $q,
+                                        'answer' => $a
+                                    ]);
+                                } catch (\Exception $e)
+                                {
+                                    //just skip this if it didn't add, might be a duplicate question field.
+                                }
                             }
                         }
                     }
