@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 01, 2015 at 10:15 AM
+-- Generation Time: May 01, 2015 at 01:59 PM
 -- Server version: 5.5.43-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.9
 
@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `players` (
   `high_score` int(11) NOT NULL DEFAULT '0',
   `current_run` int(11) NOT NULL DEFAULT '0',
   `best_run` int(11) NOT NULL DEFAULT '0',
+  `questions_answered` int(11) NOT NULL DEFAULT '0',
   `playing_month` int(11) NOT NULL DEFAULT '0',
   UNIQUE KEY `id_2` (`id`),
   KEY `id` (`id`)
@@ -74,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `questions` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `idx_name` (`question`),
   KEY `id_2` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=338204 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=676398 ;
 
 -- --------------------------------------------------------
 

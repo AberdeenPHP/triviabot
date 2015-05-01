@@ -18,7 +18,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
     $bot = new TriviaBot("Trivia Bot");
     $game = \Game::first();
     $player_id = $_POST['user_id'];
-    $player_name = mysql_real_escape_string($_POST['user_name']);
+    $player_name = $_POST['user_name'];
     $player_text = $_POST['text'];
     $player_channel = $_POST['channel_name'];
     $timestamp = time();

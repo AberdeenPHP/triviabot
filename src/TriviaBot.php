@@ -40,11 +40,12 @@ class TriviaBot
             $game = \Game::create(["started"=>0,"stopping"=>0,"delay"=>20]);
         }
         //set all questions to OFF
-        while (!empty($this->getCurrentQuestion()))
+        $on = $this->getCurrentQuestion();
+        while (!empty($on))
         {
-            $on = $this->getCurrentQuestion();
             $on->current_hint = 0;
             $on->save();
+            $on = $this->getCurrentQuestion();
         }
         // \Question::update_all(array('set' => 'current_hint = 0'));
         //set a random question to ON
@@ -90,7 +91,7 @@ class TriviaBot
                 $questions = file($file, FILE_IGNORE_NEW_LINES);
 
                 $title = ltrim($questions[0], "# ");
-                $question_set = \Question_set::create(["filename" => mysql_real_escape_string($question_file), "title" => mysql_real_escape_string($title)]);
+                $question_set = \Question_set::create(["filename" => $question_file, "title" => $title]);
 
                 foreach ($questions as $question)
                 {
@@ -104,27 +105,20 @@ class TriviaBot
                         $q = trim(array_shift($split));
                         if (!empty($q) && !empty($split))
                         {
-                            /*
-                                @TODO Make this more efficient!
-                                @TODO Try array_diff for all questions then in_array this question maybe?
-                            */
-                            if (true || !$this->check_question_exists($q)) //this is mental, just accept the dupes!
+                            $a = serialize($split);
+                            try
                             {
-                                $a = serialize($split);
-                                try
-                                {
-                                    //php-activerecord automatically escapes right?
-                                    \Question::create([
-                                        'question_set' => $question_set->id,
-                                        'question' => mysql_real_escape_string($q),
-                                        'answer' => mysql_real_escape_string($a)
-                                    ]);
-                                } catch (\Exception $e)
-                                {
-                                    //just skip this if it didn't add, might be a duplicate question field.
-                                }
+                                //duplicate questions won't be saved because of the unique property on the db column
+                                \Question::create([
+                                    'question_set' => $question_set->id,
+                                    'question' => $q,
+                                    'answer' => $a
+                                ]);
+                            } catch (\Exception $e)
+                            {
+                                //just skip this if it didn't add, might be a duplicate question field.
                             }
-                        }
+                            }
                     }
                 }
                 $total_questions = $this->get_total_questions();
