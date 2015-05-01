@@ -161,8 +161,9 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 }
                 die($bot->sendMessageToChannel($message));
                 break;
+            case "rows": //the only reason this is here is because I always forget it's runs and type rows in channel!
             case "runs":
-                $message = "The top 3 best runs are:\n";
+                $message = "The top 3 best runs (questions answered in a row before another player) are:\n";
                 $scorers = \Player::find('all',array("order"=>"best_run DESC", "limit"=>3));
                 if (!empty($scorers))
                 {
