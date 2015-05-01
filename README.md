@@ -39,4 +39,4 @@ Question files should be placed in the questions folder. An example question fil
 You should receive a response from the bot saying your file is loaded.
 Loading large files may require your PHP max_execution_time is set to a larger number, 30 seconds is the default. A value of 300 allowed me to load a 350,000 question strong file.
 
-I have included a file named questions.sql.zip which can be inserted into your database should you wish a pre-populated list of over 160,000 questions to kick you off. This includes the example.txt questions.
+I have included a file named questions.sql.zip which can be inserted into your database should you wish a pre-populated list of over 160,000 questions to kick you off. This includes the example.txt questions. **Load this file via MySQL not via the** `!trivia load [file]` **command**
