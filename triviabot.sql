@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 01, 2015 at 10:09 AM
+-- Generation Time: May 01, 2015 at 10:15 AM
 -- Server version: 5.5.43-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.9
 
@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS `questions` (
   `current_hint` int(11) DEFAULT '0' COMMENT 'the question currently in play',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `idx_name` (`question`),
   KEY `id_2` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=338204 ;
 
