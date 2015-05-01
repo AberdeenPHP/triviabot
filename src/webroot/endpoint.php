@@ -175,6 +175,19 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 }
                 die($bot->sendMessageToChannel($message));
                 break;
+            case "answers":
+                $message = "The top 3 players by number of questions answered are:\n";
+                $scorers = \Player::find('all',array("order"=>"questions_answered DESC", "limit"=>3));
+                if (!empty($scorers))
+                {
+                    foreach ($scorers as $scorer)
+                    {
+                        $runs = number_format($scorer->questions_answered);
+                        $message .= "*{$scorer->name}* : {$runs}\n";
+                    }
+                }
+                die($bot->sendMessageToChannel($message));
+                break;
             case "me":
                 $months = ["Never","January","February","March","April","May","June","July","August","September","October","November","December"];
                 $month = $months[$player->playing_month];
@@ -182,7 +195,8 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 $message = "Information for *{$player_name}*:\n";
                 $message .= "Current score (played in {$month}): *".number_format($player->current_score)."*\n";
                 $message .= "High score: *".number_format($player->high_score)."*\n";
-                $message .= "Most questions answered in a row: *".number_format($player->best_run)."*";
+                $message .= "Most questions answered in a row: *".number_format($player->best_run)."*\n";
+                $message .= "Total number of questions answered: *".number_format($player->questions_answered)."*\n";
                 die($bot->sendMessageToChannel($message));
                 break;
             case "help":
@@ -252,6 +266,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 {
                     $player->best_run = $player->current_run;
                 }
+                $player->questions_answered++;
                 $player->save();
                 $totalscore = number_format($player->current_score);
                 $message = "YES! *{$player_name}* that's {$player->current_run} in a row. You scored {$score} points bringing your total for the month to {$totalscore}!\n";
