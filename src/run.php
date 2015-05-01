@@ -38,7 +38,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
                     $hint .= $letter;
                 } else
                 {
-                    $hint .= "*";
+                    $hint .= "_";
                 }
                 $previousLetter = $letter;
             }
@@ -52,7 +52,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
                     $hint .= $letter;
                 } else
                 {
-                    $hint .= "*";
+                    $hint .= "_";
                 }
                 $previousLetter = $letter;
             }
@@ -66,7 +66,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
                     $hint .= $letter;
                 } else
                 {
-                    $hint .= "*";
+                    $hint .= "_";
                 }
                 $previousLetter = $letter;
             }

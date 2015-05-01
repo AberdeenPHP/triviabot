@@ -270,7 +270,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 $player->save();
                 $totalscore = number_format($player->current_score);
                 $message = "YES! *{$player_name}* that's {$player->current_run} in a row. You scored {$score} points bringing your total for the month to {$totalscore}!\n";
-                $message .= "The answer was _{$player_text}_!\n";
+                $message .= "The answer was *{$player_text}*!\n";
                 $game->questions_without_reply = 0;
                 if (($game->stopping == 1))
                 {
