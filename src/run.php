@@ -96,7 +96,7 @@ if (($game->last_asked + $game->delay) <= $timestamp && $game->started == 1)
         }
         $game->save();
 
-        $question->current_hint = $question->current_hint + 1;
+        $question->current_hint++;
         $question->save();
 
         //send the question and hint/answer to channel
