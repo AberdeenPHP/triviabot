@@ -90,7 +90,7 @@ class TriviaBot
                 $questions = file($file, FILE_IGNORE_NEW_LINES);
 
                 $title = ltrim($questions[0], "# ");
-                $question_set = \Question_set::create(["filename" => $question_file, "title" => $title]);
+                $question_set = \Question_set::create(["filename" => mysql_real_escape_string($question_file), "title" => mysql_real_escape_string($title)]);
 
                 foreach ($questions as $question)
                 {
@@ -116,8 +116,8 @@ class TriviaBot
                                     //php-activerecord automatically escapes right?
                                     \Question::create([
                                         'question_set' => $question_set->id,
-                                        'question' => $q,
-                                        'answer' => $a
+                                        'question' => mysql_real_escape_string($q),
+                                        'answer' => mysql_real_escape_string($a)
                                     ]);
                                 } catch (\Exception $e)
                                 {
