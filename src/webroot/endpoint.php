@@ -241,7 +241,6 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
             {
                 //this player's right!!
                 $others = \Player::find('all', array('conditions' => "id != {$player->id}"));
-                $player->playing_month = date("n");
                 if (!empty($others))
                 {
                     foreach ($others as $other)
@@ -255,6 +254,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
                 if ($player->playing_month != $game->round_month)
                 {
                     $player->current_score = 0;
+                    $player->playing_month = date("n");
                 }
                 $player->current_score += $score;
                 if ($player->current_score > $player->high_score)
