@@ -213,9 +213,11 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
             $win = false;
             foreach ($answers as $answer)
             {
+                $bad_escaped = ["&amp;","&lt;","&gt;"];
+                $good_unescaped = ["&","<",">"];
                 $lowanswer = strtolower($answer);
-                $lowguess = strtolower($player_text);
-                if (trim($lowanswer) == trim($lowguess)) // Y U NO WORK!?!?
+                $lowguess = str_replace($bad_escaped,$good_unescaped,strtolower($player_text));
+                if (trim($lowanswer) == trim($lowguess))
                 {
                     $win = true;
                 }

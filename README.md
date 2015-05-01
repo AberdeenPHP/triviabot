@@ -32,4 +32,10 @@ The minimum delay between questions/hints (the output of the run.php file) is 20
 
 ###Database setup.
 
-In the vendor/btk/triviabot/ folder there is a triviabot.sql file that you can import into your database to set up your tables for the bot.
+In the vendor/btk/triviabot/ folder there is a triviabot.sql file that you can import into your database to set up your tables for the bot properly.
+
+###Loading Questions
+
+Question files should be placed in the questions folder. An example question file is included for reference. To load this in the bot type the command `!trivia load example.txt` in your slack trivia channel.
+You should receive a response from the bot saying your file is loaded.
+Loading large files may require your PHP max_execution_time is set to a larger number, 30 seconds is the default. A value of 300 allowed me to load a 350,000 question strong file.
