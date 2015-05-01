@@ -113,7 +113,7 @@ class TriviaBot
                                 $a = serialize($split);
                                 //php-activerecord automatically escapes right?
                                 \Question::create([
-                                    'set'=> $question_set->id,
+                                    'question_set'=> $question_set->id,
                                     'question' => $q,
                                     'answer' => $a
                                 ]);
