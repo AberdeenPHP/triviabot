@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 30, 2015 at 04:31 PM
+-- Generation Time: May 01, 2015 at 10:09 AM
 -- Server version: 5.5.43-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.9
 
@@ -66,13 +66,14 @@ CREATE TABLE IF NOT EXISTS `players` (
 
 CREATE TABLE IF NOT EXISTS `questions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `set` int(11) NOT NULL,
-  `question` text NOT NULL,
+  `question_set` int(11) NOT NULL,
+  `question` varchar(255) NOT NULL,
   `answer` text NOT NULL COMMENT 'serialized array of possible answers',
   `current_hint` int(11) DEFAULT '0' COMMENT 'the question currently in play',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=33501 ;
+  UNIQUE KEY `id` (`id`),
+  KEY `id_2` (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=338204 ;
 
 -- --------------------------------------------------------
 
@@ -86,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `question_sets` (
   `title` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
