@@ -207,6 +207,7 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
 
                 $helpText .= "*!trivia scores / !trivia runs* - shows the top 3 high scorers / best runs.\n";
                 $helpText .= "*!trivia questions* - shows how many questions are loaded\n";
+                $helpText .= "*!trivia answers* - shows the top 3 players by questions answered\n";
                 $helpText .= "*!trivia me* - get details on your own scoring.\n";
                 $helpText .= "*!trivia seen [player]* - says when the player last typed something in channel\n";
                 die($bot->sendMessageToChannel($helpText));
