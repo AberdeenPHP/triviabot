@@ -14,7 +14,7 @@ Things you'll need to set up if you want this to run:
 
 Your web server should ideally use a sub domain where the web root is the folder /vendor/btk/triviabot/src/webroot/ so your outgoing web hook URL can be, e.g. http://triviabot.example.com/endpoint.php
 
-###Example CRON Settings.
+###Example CRON Settings
 
 I use a 10 second delay between running the scripts. I've tested this with over 30,000 questions loaded in the bot and it works fine for me.
 Cron however, only uses minutes as it's minimum time increment. So I set mine up like this...
@@ -29,7 +29,7 @@ Cron however, only uses minutes as it's minimum time increment. So I set mine up
 
 The minimum delay between questions/hints (the output of the run.php file) is 20 seconds so this should give more than we need.
 
-###Database setup.
+###Database Setup
 
 In the vendor/btk/triviabot/ folder there is a triviabot.sql file that you can import into your database to set up your tables for the bot properly.
 
