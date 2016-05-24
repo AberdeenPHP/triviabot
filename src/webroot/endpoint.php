@@ -6,7 +6,10 @@
  */
 
 namespace BTK;
+use Exception;
+use Game;
 
+error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once('../config.php');
 include_once('../db.php');
@@ -16,7 +19,18 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
     include_once('../TriviaBot.php');
 
     $bot = new TriviaBot("Trivia Bot");
-    $game = \Game::first();
+    $game = Game::first();
+    if (empty($game))
+    {
+        try
+        {
+            $game = Game::create(["started" => 0, "stopping" => 0, "delay" => 20, 'last_asked' => 0]);
+        }
+        catch (Exception $e)
+        {
+            die($bot->sendMessageToChannel($e->getMessage()));
+        }
+    }
     $player_id = $_POST['user_id'];
     $player_name = $_POST['user_name'];
     $player_text = $_POST['text'];
@@ -25,9 +39,17 @@ if (!empty($_POST) && (!empty($_POST['token']) && $_POST['token'] == SLACK_OUTGO
     $player = \Player::find("first",["slack_id"=>$player_id]);
     if (empty($player))
     {
-        $player = \Player::create([
-            "slack_id"=>$player_id
-        ]);
+        try
+        {
+            $player = \Player::create([
+                "slack_id" => $player_id,
+                "name" => $player_name,
+            ]);
+        }
+        catch (Exception $e)
+        {
+            die($bot->sendMessageToChannel($e->getMessage()));
+        }
     }
     $player->name = $player_name;
     $player->last_seen = $timestamp;
